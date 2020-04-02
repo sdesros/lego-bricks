@@ -1,38 +1,47 @@
-.App {
+body {
+  background: ghostwhite;
+}
+
+.createform {
+  padding: 10px;
+  border: 2px solid gainsboro;
+  width: 100%;
+}
+
+.sortform {
+  padding: 10px;
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+form .number {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+form .invalid {
+    border-color: red;
+}
+
+.brickcollection {
+  border: 2px solid gainsboro;
+  width: 100%;
+}
+
+.brickcollection h3 {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.brickcollection .brick {
+  margin: 5px;
+  display: inline-grid;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.brickcollection .brick .stud {
+  margin: auto;
 }
