@@ -1,3 +1,24 @@
+# Introduction
+This is quick coding exercise to allow the user to create a random assortment of lego bricks, display them and then allow the user to sort and filter the bricks based on the overall number of studs.
+
+# Instructions
+* Run `npm start`
+* Once the page opens:
+    * Enter the number of bricks (1-25) and hit generate bricks to get a random assortment of bricks from 1x1 to 10x10.
+    * Once bricks are generated, the user is able to enter the minimum desired amount of studs (1-100) and then filter and sort the results by number of studs.
+
+## Notes 
+* The colour is dynamically assigned when drawing the brick based on it's position, if you sort, it might reassign a new colour.
+* Any filtered bricks are lost, you cannot reclaim them by changing the minimum stud number to a smaller value.
+
+# Proposed next steps
+* Add tests
+* Clean up the styling
+* Having the sorting and filtering form inside of the "BrickCollection" seems wrong, maybe segregate it that up.
+* Have the bricks hold onto their colours
+* Add ability to reclaim filtered bricks if the minimum stud is reduced enough to re-include them in the set.
+
+# Generated below:
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
