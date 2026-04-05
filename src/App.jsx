@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import './App.css';
 
 const BRICK_COLORS = [
@@ -121,11 +121,11 @@ function LegoCreateForm(props) {
 }
 
 function App() {
-  const [numberOfBricks, setNumberOfBricks] = React.useState(10);
-  const [numberValid, setNumberValid] = React.useState(true);
-  const [constructedBricks, setConstructedBricks] = React.useState([])
-  const [minimumStuds, setMinimumStuds] = React.useState(12)
-  const [minimumValid, setMinimumValid] = React.useState(true);
+  const [numberOfBricks, setNumberOfBricks] = useState(10);
+  const [numberValid, setNumberValid] = useState(true);
+  const [constructedBricks, setConstructedBricks] = useState([])
+  const [minimumStuds, setMinimumStuds] = useState(12)
+  const [minimumValid, setMinimumValid] = useState(true);
 
   function numberOfBricksChange(value) {
     setNumberOfBricks(value);
