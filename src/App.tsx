@@ -1,35 +1,25 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import { LegoBrick } from "./types";
 
-const BRICK_COLORS = [
-  {
-    background: 'darkblue',
-    border: 'blue'
-  },
-  {
-    background: 'darkred',
-    border: 'crimson'
-  },
-  {
-    background: 'green',
-    border: 'lightgreen'
-  },
-  {
-    background: 'grey',
-    border: 'lightgrey'
-  }
-]
+function Stud({
+  brickNumber, index
+}: { brickNumber: number, index: number }) {
+  return ( 
+    <div className="stud" key={`stud${brickNumber}-${index}`}>O</div>
+  )
+}
 
-function Brick(props) {
-    function pickColor() {
-      return BRICK_COLORS[props.brickNumber % BRICK_COLORS.length];
-    }
-    
-    function buildStuds() {
-    let studs = [];
-    for(let i = 0; i < props.brick.numberOfStuds(); i++) {
+function Brick(props: {
+  brickNumber: number,
+  brick: LegoBrick,
+  key: string,
+}) {
+  function buildStuds() {
+    let studs: Element[] = [];
+    for(let i = 0; i < props.brick.getNumberOfStuds(); i++) {
       studs.push(
-          <div className="stud" key={`stud$${props.brickNumber}-${i}`}>O</div>
+          Stud({ brickNumber: props.brickNumber, index: i})
       );
     }
     return studs;
@@ -38,9 +28,9 @@ function Brick(props) {
   function buildStyle() {
     return (
       {
-        border: `1px solid ${pickColor().border}`,
-        backgroundColor: `${pickColor().background}`,
-        color: `${pickColor().border}`,
+        border: `1px solid ${props.brick.getColor().border}`,
+        backgroundColor: `${props.brick.getColor().background}`,
+        color: `${props.brick.getColor().border}`,
         gridTemplateColumns: `repeat(${props.brick.getWidth()}, 20px)`,
         gridTemplateRows: `repeat(${props.brick.getHeight()}, 20px)`
       }
@@ -56,11 +46,11 @@ function Brick(props) {
 
 // This seems vaguely familiar to the other form, maybe make it common?
 function BrickSortForm(props) {
-  function handleNumberChanged (evt) {
+  function handleNumberChanged (evt: { target: { value: number }}) {
     props.minimumStudChange(evt.target.value);
   }
 
-  function handleButtonClick(evt) {
+  function handleButtonClick() {
     props.filterAndSortPressed();
   }
 
@@ -91,9 +81,9 @@ function BrickCollection(props) {
         minimumStudValid={props.minimumStudValid}
         filterAndSortPressed={props.filterAndSortPressed}
       />
-      {props.collection.map((brick, index) => {
+      {props.collection.map((brick: LegoBrick, index: number) => {
         return (
-          <Brick brick={brick} brickNumber={index} key={index}/>
+          <Brick brick={brick} brickNumber={index} key={`collectionentry-${index}`}/>
         );
       })}
     </div>
@@ -126,64 +116,40 @@ function App() {
   const [constructedBricks, setConstructedBricks] = useState([])
   const [minimumStuds, setMinimumStuds] = useState(12)
   const [minimumValid, setMinimumValid] = useState(true);
+  const [visibleBricks, setVisibleBricks] = useState(constructedBricks)
 
-  function numberOfBricksChange(value) {
+  function filterAndSortBricks() {
+    setVisibleBricks((prev: LegoBrick[]) => {
+        if( minimumStuds && minimumValid ) {
+          return constructedBricks.filter((brick: LegoBrick )=> { return brick.getNumberOfStuds() >= minimumStuds }).sort((brick1: LegoBrick, brick2: LegoBrick) => brick1.getNumberOfStuds() - brick2.getNumberOfStuds())
+        }
+        return constructedBricks;
+      }
+    )
+  }
+  
+  function numberOfBricksChange(value: number) {
     setNumberOfBricks(value);
     setNumberValid(value > 0 && value <= 25)
   }
 
   function generateBricks() {
-    setConstructedBricks(createCollection(numberOfBricks));
+    const collection = createCollection(numberOfBricks);
+    setConstructedBricks(collection);
+    setVisibleBricks(collection);
   }
 
-  function minimumStudChange(value) {
+  function minimumStudChange(value: number) {
     setMinimumStuds(value);
     setMinimumValid(value >= 0 && value <= 100);
   }
 
-  function filterAndSortBricks() {
-    setConstructedBricks(filterAndSort(constructedBricks));
-  }
-
-  function filterAndSort(bricks) {
-    return bricks.slice().filter(
-      (brick) => {
-        return brick.numberOfStuds() >= minimumStuds;
-      }
-    ).sort((brick1, brick2) => brick1.numberOfStuds() - brick2.numberOfStuds());
-  }
-
-  function createCollection(totalNumberOfBricks) {
-    let bricks = [];
+  function createCollection(totalNumberOfBricks: number) {
+    let bricks: LegoBrick[] = [];
     for (let i=0; i < totalNumberOfBricks; i++) {
-      bricks.push(
-        createBrick(
-          Math.ceil(Math.random() * 10),
-          Math.ceil(Math.random() * 10)
-        )
-      ); 
+      bricks.push(LegoBrick.buildRandomBrick())
     }
     return bricks
-  }
-
-  function createBrick(x, y) {
-    // validate the inputs
-    const height = x;
-    const width = y;
-    return {
-      numberOfStuds() {
-        return height * width;
-      },
-      getHeight() {
-        return height;
-      },
-      getWidth() {
-        return width;
-      },
-      toString() {
-        return `${width}x${height} (${this.numberOfStuds()})`;
-      }
-    }
   }
 
   return (
@@ -195,7 +161,7 @@ function App() {
         numberValid={numberValid}
       />
       <BrickCollection 
-        collection={constructedBricks}
+        collection={visibleBricks}
         minimumStuds={minimumStuds}
         minimumStudChange={minimumStudChange}
         minimumStudValid={minimumValid}
