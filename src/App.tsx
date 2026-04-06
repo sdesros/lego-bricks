@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 import { LegoBrick } from "./types";
 import { Brick } from './Brick';
@@ -21,23 +21,81 @@ function BrickSortForm(props) {
   );
 }
 
-function BrickCollection(props) {
- if (props.collection.length < 1) {
+const DEFAULT_MINIMUM=1
+
+const SORT = [
+  'Size', 'Height', 'Width', 'Color'
+]
+
+function BrickCollection({
+  collection
+}: {
+  collection: LegoBrick[]
+}) {
+  const [minimum, setMinimum] = useState(DEFAULT_MINIMUM)
+  const [sort, setSort] = useState(SORT[0])
+  const [descending, setDescending] = useState(false)
+
+  const visibleBricks = useMemo(() => {
+    return collection.filter(
+      (brick: LegoBrick )=> { 
+        return brick.getNumberOfStuds() >= minimum 
+      }).sort((b1: LegoBrick, b2: LegoBrick) =>
+        {
+          const brick1 = descending ? b2: b1
+          const brick2 = descending ? b1 : b2
+          switch(sort) {
+            case 'Color':
+                return brick1.getColor().background.localeCompare(brick2.getColor().background)
+            case 'Width':
+                return brick1.getWidth() - brick2.getWidth()
+            case 'Height':
+              return brick1.getHeight() - brick2.getHeight()
+            default: 
+              return brick1.getNumberOfStuds() - brick2.getNumberOfStuds()
+          }
+        })
+  }, [minimum, collection, sort, descending])
+
+  if (collection.length < 1) {
     return (
       <div className='brickcollection'>
       </div>
     );
   }
+
+  function handleButtonClick(minimumStuds: number) {
+    setMinimum(minimumStuds)
+  }
+
+  function handleSortChange(evt: { target: { value: string }}) {
+    setSort(evt?.target.value)
+  }
+
+  function toggleDescending() {
+    setDescending(!descending)
+  }
+
   return (
     <div className='brickcollection'>
-      <h3>There are {props.collection.length} bricks in the collection</h3>
-      <BrickSortForm 
-        minimumStuds={props.minimumStuds}
-        minimumStudChange={props.minimumStudChange}
-        minimumStudValid={props.minimumStudValid}
-        filterAndSortPressed={props.filterAndSortPressed}
-      />
-      {props.collection.map((brick: LegoBrick, index: number) => {
+      <h3>There are {visibleBricks.length} visible bricks in the collection out of {collection.length}.</h3>
+      <InputFieldForm
+        inputLabel="Filter bricks with a number of studs under"
+        maximum={100}
+        defaultValue={minimum}
+        changeHandler={handleButtonClick}
+      >
+        <label for="sort-select">Sort by: </label>
+        <select name="sort-select" onChange={handleSortChange}>
+          {SORT.map((sortLabel) => {
+            return (
+              <option value={sortLabel} selected={sortLabel === sort}>{sortLabel}</option>
+            )
+          })}
+        </select>
+        <button className={`direction ${descending ? 'descending' : 'ascending'}`} type="button" onClick={toggleDescending}><img src="./arrow-up-bold-svgrepo-com.svg" alt={`Change sort direction from {descending ? 'descending to ascending' : 'ascending to descending'}`}/></button>
+      </InputFieldForm>
+      {visibleBricks.map((brick: LegoBrick, index: number) => {
         return (
           <Brick brick={brick} brickNumber={index} key={`collectionentry-${index}`}/>
         );
@@ -46,59 +104,12 @@ function BrickCollection(props) {
   );
 }
 
-function LegoCreateForm(props) {
-  function handleNumberChanged (evt) {
-    props.changeNumberOfBricks(evt.target.value);
-  }
-
-  function handleButtonClick(evt) {
-    props.onGeneratePressed();
-  }
-
-  return (
-    <div className="createform">
-      <form>
-        <label htmlFor="number">Please enter the number of lego bricks to create (1-25): </label>
-        <input className={props.numberValid ? 'number' : 'number invalid'} type="number" id="numberOfBricks" value={props.bricks} onChange={handleNumberChanged}></input>
-        {props.numberValid ? <button type='button' onClick={handleButtonClick}>Generate Bricks</button> : <button type='button' disabled>Generate Bricks</button>}
-      </form>
-    </div>
-  );
-}
-
 function App() {
-  const [numberOfBricks, setNumberOfBricks] = useState(10);
-  const [numberValid, setNumberValid] = useState(true);
   const [constructedBricks, setConstructedBricks] = useState([])
-  const [minimumStuds, setMinimumStuds] = useState(12)
-  const [minimumValid, setMinimumValid] = useState(true);
-  const [visibleBricks, setVisibleBricks] = useState(constructedBricks)
-
-  function filterAndSortBricks() {
-    setVisibleBricks((prev: LegoBrick[]) => {
-        if( minimumStuds && minimumValid ) {
-          return constructedBricks.filter((brick: LegoBrick )=> { return brick.getNumberOfStuds() >= minimumStuds }).sort((brick1: LegoBrick, brick2: LegoBrick) => brick1.getNumberOfStuds() - brick2.getNumberOfStuds())
-        }
-        return constructedBricks;
-      }
-    )
-  }
-  
-  function numberOfBricksChange(value: number) {
-    setNumberOfBricks(value);
-    setNumberValid(value > 0 && value <= 25)
-  }
 
   function generateBricks(number: number) {
-    setNumberOfBricks(number)
     const collection = createCollection(number);
     setConstructedBricks(collection);
-    setVisibleBricks(collection);
-  }
-
-  function minimumStudChange(value: number) {
-    setMinimumStuds(value);
-    setMinimumValid(value >= 0 && value <= 100);
   }
 
   function createCollection(totalNumberOfBricks: number) {
@@ -118,11 +129,7 @@ function App() {
         changeHandler={generateBricks}
       />
       <BrickCollection 
-        collection={visibleBricks}
-        minimumStuds={minimumStuds}
-        minimumStudChange={minimumStudChange}
-        minimumStudValid={minimumValid}
-        filterAndSortPressed={filterAndSortBricks}
+        collection={constructedBricks}
       />
     </div>
   );

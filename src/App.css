@@ -2,30 +2,42 @@ body {
   background: ghostwhite;
 }
 
-.createform {
-  padding: 10px;
-  border: 2px solid #dcdcdc;
-  width: 100%;
-}
-
-.sortform {
+.form {
   padding: 10px;
   width: 100%;
 }
 
-form {
+.form {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-form .number {
+.form > * {
   margin-left: 1em;
-  margin-right: 1em;
 }
 
-form .invalid {
+.form > * :first-child {
+  margin-left: 0;
+}
+
+.form .invalid {
     border-color: red;
+    background-color: lightpink;
+}
+
+.direction {
+  border: none;
+  background: transparent;
+}
+
+.direction img {
+  height: 1em;
+  width: 1em;
+}
+
+.descending img {
+  transform: rotate(180deg)
 }
 
 .brickcollection {

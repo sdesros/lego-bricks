@@ -4,37 +4,42 @@ export function InputFieldForm({
     inputLabel,
     buttonLabel,
     maximum,
+    defaultValue,
     changeHandler,
     children,
 }: {
     inputLabel: string,
-    buttonLabel: string,
+    buttonLabel?: string,
     maximum: number,
+    defaultValue?: number,
     changeHandler: (newValue: number) => void,
     children?: Element
 }) {
+    const [enteredValue, setEnteredValue] = useState(defaultValue ?? maximum)
 
-    const [enteredValue, setEnteredValue] = useState(maximum)
-
-    const isValid = enteredValue <= maximum;
+    const isValid = enteredValue <= maximum && enteredValue > 0;
 
     function handleNumberChanged (evt: { target: { value: number }}) {
-        setEnteredValue(evt.target.value);
+        const value = evt.target.value;
+        setEnteredValue(value);
+        if (!buttonLabel && value <= maximum && !!value) {
+            changeHandler(value);
+        }
     }
 
     function handleButtonClick() {
         if (isValid) {
-            changeHandler(enteredValue)
+            changeHandler(enteredValue);
         }
     }
 
     return (
-        <div className="sortform">
-            <form>
-                <label htmlFor="number">{inputLabel} (1-{maximum}): </label>
-                <input className={isValid ? 'number' : 'number invalid'} type="number" id="inputNumber" value={enteredValue} onChange={handleNumberChanged}></input>
-                {isValid ? <button type='button' onClick={handleButtonClick}>{buttonLabel}</button> : <button type='button' disabled>{buttonLabel}</button>}
-            </form>
+        <div className="form">
+            <label htmlFor="number">{inputLabel} (1-{maximum}): </label>
+            <input className={isValid ? 'number' : 'number invalid'} type="number" id="inputNumber" value={enteredValue} onChange={handleNumberChanged} isValid={isValid}></input>
+            {buttonLabel && (
+                <button type='button' onClick={handleButtonClick} disabled={!isValid}>{buttonLabel}</button>
+            )}
             {children}
         </div>
     );
