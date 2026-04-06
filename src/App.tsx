@@ -1,67 +1,23 @@
 import React, { useState } from 'react';
 import './App.css';
 import { LegoBrick } from "./types";
-
-function Stud({
-  brickNumber, index
-}: { brickNumber: number, index: number }) {
-  return ( 
-    <div className="stud" key={`stud${brickNumber}-${index}`}>O</div>
-  )
-}
-
-function Brick(props: {
-  brickNumber: number,
-  brick: LegoBrick,
-  key: string,
-}) {
-  function buildStuds() {
-    let studs: Element[] = [];
-    for(let i = 0; i < props.brick.getNumberOfStuds(); i++) {
-      studs.push(
-          Stud({ brickNumber: props.brickNumber, index: i})
-      );
-    }
-    return studs;
-  }
-
-  function buildStyle() {
-    return (
-      {
-        border: `1px solid ${props.brick.getColor().border}`,
-        backgroundColor: `${props.brick.getColor().background}`,
-        color: `${props.brick.getColor().border}`,
-        gridTemplateColumns: `repeat(${props.brick.getWidth()}, 20px)`,
-        gridTemplateRows: `repeat(${props.brick.getHeight()}, 20px)`
-      }
-    );
-  }
-
-  return (
-    <div className='brick' style={buildStyle()}>
-      {buildStuds()}
-    </div>
-  )
-}
+import { Brick } from './Brick';
+import { InputFieldForm } from './InputFieldForm';
 
 // This seems vaguely familiar to the other form, maybe make it common?
 function BrickSortForm(props) {
-  function handleNumberChanged (evt: { target: { value: number }}) {
-    props.minimumStudChange(evt.target.value);
-  }
-
-  function handleButtonClick() {
+  function handleButtonClick(value: number) {
+    props.minimumStudChange(value)
     props.filterAndSortPressed();
   }
 
   return (
-    <div className="sortform">
-      <form>
-        <label htmlFor="number">Enter minimum amount of studs (1-100): </label>
-        <input className={props.minimumStudValid ? 'number' : 'number invalid'} type="number" id="numberOfBricks" value={props.minimumStuds} onChange={handleNumberChanged}></input>
-        {props.minimumStudValid ? <button type='button' onClick={handleButtonClick}>Filter and Sort</button> : <button type='button' disabled>Filter and Sort</button>}
-      </form>
-    </div>
+    <InputFieldForm
+      inputLabel="Enter minimum amount of studs"
+      buttonLabel="Filter and Sort"
+      maximum={100}
+      changeHandler={handleButtonClick}
+    />
   );
 }
 
@@ -133,8 +89,9 @@ function App() {
     setNumberValid(value > 0 && value <= 25)
   }
 
-  function generateBricks() {
-    const collection = createCollection(numberOfBricks);
+  function generateBricks(number: number) {
+    setNumberOfBricks(number)
+    const collection = createCollection(number);
     setConstructedBricks(collection);
     setVisibleBricks(collection);
   }
@@ -154,11 +111,11 @@ function App() {
 
   return (
     <div className="App">
-      <LegoCreateForm 
-        bricks={numberOfBricks}
-        changeNumberOfBricks={numberOfBricksChange}
-        onGeneratePressed={generateBricks}
-        numberValid={numberValid}
+      <InputFieldForm
+        inputLabel="Please enter the number of lego bricks to create"
+        buttonLabel="Generate Bricks"
+        maximum={25}
+        changeHandler={generateBricks}
       />
       <BrickCollection 
         collection={visibleBricks}
