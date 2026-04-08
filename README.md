@@ -5,7 +5,8 @@ This is quick coding exercise to allow the user to create a random assortment of
 * Run `npm run dev`
 * Once the page opens:
     * Enter the number of bricks (1-25) and hit generate bricks to get a random assortment of bricks from 1x1 to 10x10.
-    * Once bricks are generated, the user is able to enter the minimum desired amount of studs (1-100) and then filter and sort the results by number of studs.
+    * Once bricks are generated, the user is able to enter the minimum desired amount of studs (1-100) and then filter.
+    * This user is also able to sort the results by height, width, number of studs, color in ascending or descending value.
 
 ## Notes 
 * The colour is dynamically assigned when drawing the brick based on it's position, if you sort, it might reassign a new colour.
