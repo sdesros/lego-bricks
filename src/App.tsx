@@ -85,7 +85,7 @@ function BrickCollection({
         defaultValue={minimum}
         changeHandler={handleButtonClick}
       >
-        <label for="sort-select">Sort by: </label>
+        <label htmlFor="sort-select">Sort by: </label>
         <select name="sort-select" onChange={handleSortChange}>
           {SORT.map((sortLabel) => {
             return (
@@ -105,7 +105,7 @@ function BrickCollection({
 }
 
 function App() {
-  const [constructedBricks, setConstructedBricks] = useState([])
+  const [constructedBricks, setConstructedBricks] = useState<LegoBrick[]>([])
 
   function generateBricks(number: number) {
     const collection = createCollection(number);

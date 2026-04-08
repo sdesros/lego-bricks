@@ -15,7 +15,7 @@ export function Brick(props: {
     key: string,
 }) {
     function buildStuds() {
-        let studs: Element[] = [];
+        let studs: React.ReactNode[] = [];
         for(let i = 0; i < props.brick.getNumberOfStuds(); i++) {
             studs.push(
                 <Stud brickNumber={props.brickNumber} index={i}/>

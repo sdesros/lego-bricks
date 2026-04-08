@@ -13,14 +13,14 @@ export function InputFieldForm({
     maximum: number,
     defaultValue?: number,
     changeHandler: (newValue: number) => void,
-    children?: Element
+    children?: React.ReactNode
 }) {
     const [enteredValue, setEnteredValue] = useState(defaultValue ?? maximum)
 
     const isValid = enteredValue <= maximum && enteredValue > 0;
 
-    function handleNumberChanged (evt: { target: { value: number }}) {
-        const value = evt.target.value;
+    function handleNumberChanged (evt: React.ChangeEvent<HTMLInputElement>) {
+        const value = Number.parseInt(`${evt.target.value}`);
         setEnteredValue(value);
         if (!buttonLabel && value <= maximum && !!value) {
             changeHandler(value);
@@ -36,7 +36,7 @@ export function InputFieldForm({
     return (
         <div className="form">
             <label htmlFor="number">{inputLabel} (1-{maximum}): </label>
-            <input className={isValid ? 'number' : 'number invalid'} type="number" id="inputNumber" value={enteredValue} onChange={handleNumberChanged} isValid={isValid}></input>
+            <input className={isValid ? 'number' : 'number invalid'} type="number" id="inputNumber" value={enteredValue} onChange={handleNumberChanged} aria-valuemin={1} aria-valuemax={maximum} />
             {buttonLabel && (
                 <button type='button' onClick={handleButtonClick} disabled={!isValid}>{buttonLabel}</button>
             )}
