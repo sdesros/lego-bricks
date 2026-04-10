@@ -1,12 +1,14 @@
 import React from 'react';
-import { LegoBrick } from "./types";
+import { BrickColor, LegoBrick } from "./types";
 
-function Stud({
-    brickNumber, index
-}: { brickNumber: number, index: number }) {
-    return ( 
-        <div className="stud" key={`stud${brickNumber}-${index}`}>O</div>
-    )
+function Stud(props: { brickNumber: number, index: number, color: BrickColor}) {
+    return (
+        <div className="stud" key={`stud${props.brickNumber}-${props.index}`}>
+            <svg>
+                <circle cx={"50%"} cy={"50%"} r={"40%"} stroke={props.color.border} fill={props.color.border} />
+            </svg>
+        </div>
+    );
 }
   
 export function Brick(props: {
@@ -18,7 +20,7 @@ export function Brick(props: {
         let studs: React.ReactNode[] = [];
         for(let i = 0; i < props.brick.getNumberOfStuds(); i++) {
             studs.push(
-                <Stud brickNumber={props.brickNumber} index={i}/>
+                <Stud brickNumber={props.brickNumber} index={i} color={props.brick.getColor()}/>
             );
         }
         return studs;

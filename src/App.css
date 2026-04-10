@@ -28,7 +28,12 @@ body {
 
 .direction {
   border: none;
+  border-radius: 5px;
   background: transparent;
+}
+
+.direction:hover {
+  background: grey;
 }
 
 .direction img {
@@ -56,4 +61,14 @@ body {
 
 .brickcollection .brick .stud {
   margin: auto;
+}
+
+.stud {
+  height: 1em;
+  width: 1em;
+}
+
+.stud svg {
+  height: 100%;
+  width: 100%;
 }
