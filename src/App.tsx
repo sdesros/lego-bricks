@@ -4,23 +4,6 @@ import { LegoBrick } from "./types";
 import { Brick } from './Brick';
 import { InputFieldForm } from './InputFieldForm';
 
-// This seems vaguely familiar to the other form, maybe make it common?
-function BrickSortForm(props) {
-  function handleButtonClick(value: number) {
-    props.minimumStudChange(value)
-    props.filterAndSortPressed();
-  }
-
-  return (
-    <InputFieldForm
-      inputLabel="Enter minimum amount of studs"
-      buttonLabel="Filter and Sort"
-      maximum={100}
-      changeHandler={handleButtonClick}
-    />
-  );
-}
-
 const DEFAULT_MINIMUM=1
 
 const SORT = [
@@ -59,8 +42,7 @@ function BrickCollection({
 
   if (collection.length < 1) {
     return (
-      <div className='brickcollection'>
-      </div>
+      <div className='brickcollection' />
     );
   }
 
