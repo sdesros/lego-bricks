@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import './App.css';
 import { LegoBrick } from "./types";
 import { Brick } from './Brick';
 import { InputFieldForm } from './InputFieldForm';
