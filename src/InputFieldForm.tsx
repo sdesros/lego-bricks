@@ -1,4 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+function isNumberValid(value: number|'', max: number, min: number): boolean {
+    if (value === '') {
+        return false
+    }
+    return value >= min && value <= max;
+}
 
 export function InputFieldForm({
     inputLabel,
@@ -6,6 +13,7 @@ export function InputFieldForm({
     maximum,
     defaultValue,
     changeHandler,
+    idPrefix,
     children,
 }: {
     inputLabel: string,
@@ -13,35 +21,41 @@ export function InputFieldForm({
     maximum: number,
     defaultValue?: number,
     changeHandler: (newValue: number) => void,
+    idPrefix: string,
     children?: React.ReactNode
 }) {
-    const [enteredValue, setEnteredValue] = useState(defaultValue ?? maximum)
+    const [enteredValue, setEnteredValue] = useState<''|number>(defaultValue ?? maximum);
 
-    const isValid = enteredValue <= maximum && enteredValue > 0;
+    const showButton = !!buttonLabel;
+
+    const isValid = isNumberValid(enteredValue, maximum, 1);
 
     function handleNumberChanged (evt: React.ChangeEvent<HTMLInputElement>) {
-        const value = Number.parseInt(`${evt.target.value}`);
+        const inputValue = evt.target.value;
+        const numberValue = Number.parseInt(`${inputValue}`);
+        const value = isNaN(numberValue) ? '' : numberValue
         setEnteredValue(value);
-        if (!buttonLabel && value <= maximum && !!value) {
-            changeHandler(value);
+        if (!showButton && isNumberValid(value, maximum, 1)) {
+            // if valid, then it's a number
+            changeHandler(value as number);
         }
     }
 
     function handleButtonClick() {
         if (isValid) {
-            changeHandler(enteredValue);
+            // if valid, then it's a number
+            changeHandler(enteredValue as number);
         }
     }
 
     return (
         <div className="form">
-            <label htmlFor="number">{inputLabel} (1-{maximum}): </label>
-            <input className={isValid ? 'number' : 'number invalid'} type="number" id="inputNumber" value={enteredValue} onChange={handleNumberChanged} aria-valuemin={1} aria-valuemax={maximum} />
-            {buttonLabel && (
+            <label htmlFor={`${idPrefix}-number`}>{inputLabel} (1-{maximum}): </label>
+            <input className={isValid ? 'number' : 'number invalid'} type="number" id={`${idPrefix}-number`} value={enteredValue} onChange={handleNumberChanged} aria-valuemin={1} aria-valuemax={maximum} />
+            {showButton && (
                 <button type='button' onClick={handleButtonClick} disabled={!isValid}>{buttonLabel}</button>
             )}
             {children}
         </div>
     );
 }
-  

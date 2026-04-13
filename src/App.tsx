@@ -65,12 +65,13 @@ function BrickCollection({
         maximum={100}
         defaultValue={minimum}
         changeHandler={handleButtonClick}
+        idPrefix="filter"
       >
         <label htmlFor="sort-select">Sort by: </label>
-        <select name="sort-select" onChange={handleSortChange}>
+        <select name="sort-select" onChange={handleSortChange} id="sort-select" value={sort}>
           {SORT.map((sortLabel) => {
             return (
-              <option value={sortLabel} selected={sortLabel === sort}>{sortLabel}</option>
+              <option value={sortLabel} key={`option-${sortLabel}`}>{sortLabel}</option>
             )
           })}
         </select>
@@ -108,6 +109,7 @@ function App() {
         buttonLabel="Generate Bricks"
         maximum={25}
         changeHandler={generateBricks}
+        idPrefix="generate"
       />
       <BrickCollection 
         collection={constructedBricks}
