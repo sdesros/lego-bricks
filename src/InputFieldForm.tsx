@@ -45,7 +45,7 @@ type InputFieldFormProps = {
   children?: React.ReactNode;
 };
 
-const InputFieldForm: React.FC<InputFieldFormProps> = ({
+export const InputFieldForm: React.FC<InputFieldFormProps> = ({
     inputLabel,
     buttonLabel,
     maximum,
