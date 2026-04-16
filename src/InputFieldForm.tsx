@@ -4,7 +4,7 @@ export function isNumberValid(value: number|'', max: number, min: number): boole
     if (value === '') {
         return false
     }
-    return value >= min && value <= max;
+    return value >= min && value <= max
 }
 
 type NumberInputProps = {
@@ -20,19 +20,19 @@ const NumberInput: React.FC<NumberInputProps> = ({ label, value, onChange, min =
   const isValid = isNumberValid(value, max, min)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const numberValue = Number.parseInt(`${inputValue}`);
-    const sanitizedValue = isNaN(numberValue) ? '' : numberValue;
+    const inputValue = e.target.value
+    const numberValue = Number.parseInt(`${inputValue}`)
+    const sanitizedValue = isNaN(numberValue) ? '' : numberValue
     onChange(sanitizedValue, isNumberValid(sanitizedValue, max, min))
-  };
+  }
 
   return (
     <div className="number-input">
         {(label && <label htmlFor={`${idPrefix}-number`}>{label} ({min}-{max}): </label> )}
         <input className={isValid ? 'number' : 'number invalid'} type="number" id={`${idPrefix}-number`} value={value} onChange={handleInputChange} aria-valuemin={min} aria-valuemax={max} />
     </div>
-  );
-};
+  )
+}
 
 type InputFieldFormProps = {
   inputLabel?: string;
@@ -55,23 +55,23 @@ export const InputFieldForm: React.FC<InputFieldFormProps> = ({
     idPrefix,
     children,
 }) => {
-    const [enteredValue, setEnteredValue] = useState<''|number>(defaultValue ?? maximum);
-    const [isValid, setValid] = useState(true);
-    const showButton = !!buttonLabel;
+    const [enteredValue, setEnteredValue] = useState<''|number>(defaultValue ?? maximum)
+    const [isValid, setValid] = useState(true)
+    const showButton = !!buttonLabel
 
     function handleNumberChanged (value: number|'', valid: boolean) {
-        setEnteredValue(value);
+        setEnteredValue(value)
         setValid(valid)
         if (!showButton && valid) {
             // if valid, then it's a number
-            changeHandler(value as number);
+            changeHandler(value as number)
         }
     }
 
     function handleButtonClick() {
         if (isValid) {
             // if valid, then it's a number
-            changeHandler(enteredValue as number);
+            changeHandler(enteredValue as number)
         }
     }
 
@@ -83,5 +83,5 @@ export const InputFieldForm: React.FC<InputFieldFormProps> = ({
             )}
             {children}
         </div>
-    );
+    )
 }

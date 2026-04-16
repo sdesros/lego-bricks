@@ -23,7 +23,7 @@ type BrickCollectionProps = {
 const BrickList: React.FC<BrickListProps> = ({ bricks, baseKey }) => {
   return bricks.map((brick: LegoBrick, index: number) => (
     <Brick brick={brick} brickNumber={index} key={`${baseKey}-${index}`} />
-  ));
+  ))
 }
 
 const BrickCollection: React.FC<BrickCollectionProps> = ({ collection }) => {
@@ -61,7 +61,7 @@ const BrickCollection: React.FC<BrickCollectionProps> = ({ collection }) => {
   if (collection.length < 1) {
     return (
       <div className='brickcollection' />
-    );
+    )
   }
 
   function handleButtonClick(minimumStuds: number) {
@@ -106,19 +106,19 @@ const BrickCollection: React.FC<BrickCollectionProps> = ({ collection }) => {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 const App: React.FC = () => {
   const [constructedBricks, setConstructedBricks] = useState<LegoBrick[]>([])
 
   function generateBricks(number: number) {
-    const collection = createCollection(number);
-    setConstructedBricks(collection);
+    const collection = createCollection(number)
+    setConstructedBricks(collection)
   }
 
   function createCollection(totalNumberOfBricks: number) {
-    let bricks: LegoBrick[] = [];
+    let bricks: LegoBrick[] = []
     for (let i=0; i < totalNumberOfBricks; i++) {
       bricks.push(LegoBrick.buildRandomBrick())
     }
@@ -138,7 +138,7 @@ const App: React.FC = () => {
         collection={constructedBricks}
       />
     </div>
-  );
+  )
 }
 
 export default App;
