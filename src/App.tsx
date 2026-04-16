@@ -3,20 +3,34 @@ import { LegoBrick } from "./types";
 import { Brick } from './Brick';
 import { InputFieldForm } from './InputFieldForm';
 
-const DEFAULT_MINIMUM=1
+const DEFAULT_MINIMUM = 1
 
-const SORT = [
+type SortOption = 'Size' | 'Height' | 'Width' | 'Color';
+
+const SORT: SortOption[] = [
   'Size', 'Height', 'Width', 'Color'
 ]
 
-function BrickCollection({
-  collection
-}: {
-  collection: LegoBrick[]
-}) {
+type BrickListProps = {
+  bricks: LegoBrick[];
+  baseKey: string;
+};
+
+type BrickCollectionProps = {
+  collection: LegoBrick[];
+};
+
+const BrickList: React.FC<BrickListProps> = ({ bricks, baseKey }) => {
+  return bricks.map((brick: LegoBrick, index: number) => (
+    <Brick brick={brick} brickNumber={index} key={`${baseKey}-${index}`} />
+  ));
+}
+
+const BrickCollection: React.FC<BrickCollectionProps> = ({ collection }) => {
   const [minimum, setMinimum] = useState(DEFAULT_MINIMUM)
-  const [sort, setSort] = useState(SORT[0])
+  const [sort, setSort] = useState<SortOption>(SORT[0])
   const [descending, setDescending] = useState(false)
+  const [showFiltered, setShowFiltered] = useState(false)
 
   const visibleBricks = useMemo(() => {
     return collection.filter(
@@ -39,6 +53,11 @@ function BrickCollection({
         })
   }, [minimum, collection, sort, descending])
 
+  const filteredBricks = useMemo(() => {
+    const visibleSet = new Set(visibleBricks)
+    return collection.filter(brick => !visibleSet.has(brick))
+  }, [collection, visibleBricks])
+
   if (collection.length < 1) {
     return (
       <div className='brickcollection' />
@@ -49,8 +68,8 @@ function BrickCollection({
     setMinimum(minimumStuds)
   }
 
-  function handleSortChange(evt: { target: { value: string }}) {
-    setSort(evt?.target.value)
+  function handleSortChange(evt: React.ChangeEvent<HTMLSelectElement>) {
+    setSort(evt?.target.value as SortOption)
   }
 
   function toggleDescending() {
@@ -77,16 +96,20 @@ function BrickCollection({
         </select>
         <button className={`direction ${descending ? 'descending' : 'ascending'}`} type="button" onClick={toggleDescending}><img src="./arrow-up-bold-svgrepo-com.svg" alt={`Change sort direction from {descending ? 'descending to ascending' : 'ascending to descending'}`}/></button>
       </InputFieldForm>
-      {visibleBricks.map((brick: LegoBrick, index: number) => {
-        return (
-          <Brick brick={brick} brickNumber={index} key={`collectionentry-${index}`}/>
-        );
-      })}
+      <BrickList bricks={visibleBricks} baseKey="collectionentry" />
+      {filteredBricks.length > 0 && (
+        <div className="filtered-bricks">
+          <h3 onClick={() => setShowFiltered(!showFiltered)} style={{ cursor: 'pointer' }}>
+            Filtered out ({filteredBricks.length} bricks with less than {minimum} studs) <img src="./arrow-up-bold-svgrepo-com.svg" className={`direction ${showFiltered ? 'ascending' : 'descending'}`} alt="toggle" />
+          </h3>
+          {showFiltered && <BrickList bricks={filteredBricks} baseKey="filtered" />}
+        </div>
+      )}
     </div>
   );
 }
 
-function App() {
+const App: React.FC = () => {
   const [constructedBricks, setConstructedBricks] = useState<LegoBrick[]>([])
 
   function generateBricks(number: number) {

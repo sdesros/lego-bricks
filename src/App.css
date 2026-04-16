@@ -41,7 +41,7 @@ body {
   width: 1em;
 }
 
-.descending img {
+.direction.descending {
   transform: rotate(180deg)
 }
 
@@ -61,6 +61,16 @@ body {
 
 .brickcollection .brick .stud {
   margin: auto;
+}
+
+.filtered-bricks {
+  margin-top: 1em;
+  border: 2px solid gainsboro;
+}
+
+.filtered-bricks .direction {
+  height: 0.8em;
+  width: 0.8em;
 }
 
 .stud {
