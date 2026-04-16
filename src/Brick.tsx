@@ -1,26 +1,31 @@
 import React from 'react';
 import { BrickColor, LegoBrick } from "./types";
 
-function Stud(props: { color: BrickColor}) {
+type StudProps = {
+  color: BrickColor
+}
+
+const Stud: React.FC<StudProps> = ({ color }) => {
     return (
         <div className="stud">
             <svg>
-                <circle cx={"50%"} cy={"50%"} r={"40%"} stroke={props.color.border} fill={props.color.border} />
+                <circle cx={"50%"} cy={"50%"} r={"40%"} stroke={color.border} fill={color.border} />
             </svg>
         </div>
     );
 }
-  
-export function Brick(props: {
-    brickNumber: number,
-    brick: LegoBrick,
-    key: string,
-}) {
+
+type BrickProps = {
+  brickNumber: number,
+  brick: LegoBrick,
+}
+
+export const Brick: React.FC<BrickProps> = ({ brickNumber, brick}) => {
     function buildStuds() {
         let studs: React.ReactNode[] = [];
-        for(let i = 0; i < props.brick.getNumberOfStuds(); i++) {
+        for(let i = 0; i < brick.getNumberOfStuds(); i++) {
             studs.push(
-                <Stud key={`stud${props.brickNumber}-${i}`} color={props.brick.getColor()}/>
+                <Stud key={`stud${brickNumber}-${i}`} color={brick.getColor()}/>
             );
         }
         return studs;
@@ -29,11 +34,11 @@ export function Brick(props: {
     function buildStyle() {
         return (
         {
-            border: `1px solid ${props.brick.getColor().border}`,
-            backgroundColor: `${props.brick.getColor().background}`,
-            color: `${props.brick.getColor().border}`,
-            gridTemplateColumns: `repeat(${props.brick.getWidth()}, 20px)`,
-            gridTemplateRows: `repeat(${props.brick.getHeight()}, 20px)`
+            border: `1px solid ${brick.getColor().border}`,
+            backgroundColor: `${brick.getColor().background}`,
+            color: `${brick.getColor().border}`,
+            gridTemplateColumns: `repeat(${brick.getWidth()}, 20px)`,
+            gridTemplateRows: `repeat(${brick.getHeight()}, 20px)`
         }
         );
     }
