@@ -1,7 +1,7 @@
 # Introduction
 This is quick coding exercise to allow the user to create a random assortment of lego bricks, display them and then allow the user to sort and filter the bricks based on the overall number of studs.
 
-Mostly being used as a playground to run various coding assistants through their paces.
+Recent changes in this repo mostly done to various coding assistants through their paces by updating dependencies and make UI tweaks.
 
 # Instructions
 * Run `npm run dev`
